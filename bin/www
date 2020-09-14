@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+const app = require('../app');
+const normalizePort = require('../utils/normalizePort');
+const port = normalizePort(process.env.PORT || '3000');
+const debug = require('debug')('forasoft-entrance:server');
+const server = app.listen(port);
+const io = require('socket.io').listen(server);
+const onSocketConnection = require('../utils/onSocketConnection');
+
+app.set('port', port);
+
+io.on('connection', onSocketConnection);
+
+server.on('error', (error) => {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    const bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+});
+
+server.on('listening', () => {
+    const address = server.address();
+    const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + address.port;
+    debug('Listening on ' + bind);
+});
