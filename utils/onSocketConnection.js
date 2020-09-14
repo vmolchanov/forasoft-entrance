@@ -1,6 +1,4 @@
 const onSocketConnection = (socket) => {
-    console.log('here2');
-
     socket.on('joinUser', (id) => {
         socket.join(id);
     });
