@@ -1,7 +1,7 @@
 import './index.scss';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Redirect} from 'react-router-dom';
+import {Redirect, useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 
@@ -32,7 +32,13 @@ class CreateChat extends Component {
                         body: JSON.stringify({
                             title: this.state.value
                         })
-                    });
+                    })
+                        .then((response) => {
+                            return response.json();
+                        })
+                        .then(({id}) => {
+                            this.props.history.push(`/chat/${id}`);
+                        });
                 }}>
                     <div className='CreateChat__content'>
                         <div className='CreateChat__input'>
