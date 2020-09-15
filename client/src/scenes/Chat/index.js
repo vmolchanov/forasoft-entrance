@@ -1,3 +1,4 @@
+import './index.scss';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
@@ -14,6 +15,8 @@ class Chat extends Component {
         
         this.socket = null;
 
+        this.messagesRef = React.createRef();
+
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onTextAreaChange = this.onTextAreaChange.bind(this);
     }
@@ -25,7 +28,7 @@ class Chat extends Component {
         this.socket.on('newMessage', (message) => {
             this.props.onAddMessage({
                 ...message,
-                type: MessageType.OUTGOING
+                type: MessageType.INCOMING
             });
         });
         this.props.onLoadComponent(this.id);
@@ -33,6 +36,11 @@ class Chat extends Component {
 
     componentWillUnmount() {
         this.socket.disconnect();
+    }
+
+    componentDidUpdate() {
+        const element = this.messagesRef.current;
+        element.scrollTop = element.scrollHeight;
     }
     
     render() {
@@ -43,23 +51,23 @@ class Chat extends Component {
 
         return (
             <div className='Chat'>
-                <h1>{title}</h1>
-                <div className='Chat__messages'>
-                    {this.props.messages.length === 0 ?
-                        this.renderNoMessages() :
-                        this.renderMessages(this.props.messages)}
+                <h1 className='Chat__title'>{title}</h1>
+                <div className='Chat__content'>
+                    <div className='Chat__messages' ref={this.messagesRef}>
+                        {this.props.messages.length === 0 ?
+                            this.renderNoMessages() :
+                            this.renderMessages(this.props.messages)}
+                    </div>
+                    <form className='Chat__control' onSubmit={this.onFormSubmit}>
+                        <input
+                            id='message'
+                            name='message'
+                            value={this.props.currentMessage}
+                            onChange={this.onTextAreaChange}
+                        />
+                        <button type='submit'>Отправить</button>
+                    </form>
                 </div>
-                <form className='Chat__control' onSubmit={this.onFormSubmit}>
-                    <textarea
-                        id='message'
-                        name='message'
-                        value={this.props.currentMessage}
-                        onChange={this.onTextAreaChange}
-                        cols='30'
-                        rows='10'
-                    ></textarea>
-                    <button type='submit'>Отправить</button>
-                </form>
             </div>
         );
     }

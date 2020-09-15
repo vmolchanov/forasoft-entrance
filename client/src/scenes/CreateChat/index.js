@@ -1,3 +1,4 @@
+import './index.scss';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
@@ -20,8 +21,8 @@ class CreateChat extends Component {
         }
 
         return (
-            <div>
-                <form action='#' method='POST' onSubmit={(e) => {
+            <div className='CreateChat'>
+                <form className='CreateChat__form' action='#' method='POST' onSubmit={(e) => {
                     e.preventDefault();
                     fetch('/chat/create', {
                         method: 'POST',
@@ -33,25 +34,26 @@ class CreateChat extends Component {
                         })
                     });
                 }}>
-                
-                    <div>
-                        <label htmlFor='title'>Название чата</label>
-                        <input
-                            id='title'
-                            name='title'
-                            type='text'
-                            placeholder='Вечерние посиделки'
-                            required={true}
-                            value={this.state.value}
-                            onChange={(e) => {
-                                this.setState({
-                                    value: e.target.value
-                                })
-                            }}
-                        />
+                    <div className='CreateChat__content'>
+                        <div className='CreateChat__input'>
+                            <label htmlFor='title'>Название чата</label>
+                            <input
+                                id='title'
+                                name='title'
+                                type='text'
+                                placeholder='Вечерние посиделки'
+                                required={true}
+                                value={this.state.value}
+                                onChange={(e) => {
+                                    this.setState({
+                                        value: e.target.value
+                                    })
+                                }}
+                            />
+                        </div>
+                        
+                        <button className='CreateChat__button' type='submit'>Создать</button>
                     </div>
-                    
-                <button type='submit'>Создать</button>
             </form>
             </div>
         );

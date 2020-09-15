@@ -1,3 +1,4 @@
+import './index.scss';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
@@ -18,20 +19,21 @@ class ChooseChat extends Component {
         }
 
         return (
-            <div>
-                <ul>
+            <div className='ChooseChat'>
+                <ul className='ChooseChat__action-list'>
                     {/* <li>
                         <Link to='/join'>Присоединиться</Link>
                     </li> */}
-                    <li>
-                        <Link to='/create'>Создать</Link>
+                    <li className='ChooseChat__action-item'>
+                        <Link className='ChooseChat__action-link' to='/create'>Создать</Link>
                     </li>
                 </ul>
-                <ul>
+                <hr/>
+                <ul className='ChooseChat__chat-list'>
                     {chats.map(({title, id}, index) => {
                         return (
-                            <li key={index}>
-                                <Link to={`/chat/${id}`}>{title}</Link>
+                            <li className='ChooseChat__chat-item' key={index}>
+                                <Link className='ChooseChat__chat-link' to={`/chat/${id}`}>{title}</Link>
                             </li>
                         );
                     })}

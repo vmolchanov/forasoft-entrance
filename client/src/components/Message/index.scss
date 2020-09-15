@@ -1,0 +1,32 @@
+.Message {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 20px;
+    max-width: 500px;
+
+    &:not(:last-child) {
+        margin-bottom: 10px;
+    }
+}
+
+.Message__name {
+    font-size: 14px;
+    color: #00c8aa;
+}
+
+.Message__content {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.Message__time {
+    align-self: flex-end;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #aaaaaa;
+}
