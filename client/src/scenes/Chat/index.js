@@ -95,7 +95,7 @@ class Chat extends Component {
     }
 
     renderNoMessages() {
-        return <p>Сообщений нет</p>;
+        return <p className='Chat__no-messages'>Сообщений нет</p>;
     }
 
     onFormSubmit(e) {
