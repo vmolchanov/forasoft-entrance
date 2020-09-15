@@ -20,9 +20,9 @@ class ChooseChat extends Component {
         return (
             <div>
                 <ul>
-                    <li>
+                    {/* <li>
                         <Link to='/join'>Присоединиться</Link>
-                    </li>
+                    </li> */}
                     <li>
                         <Link to='/create'>Создать</Link>
                     </li>
