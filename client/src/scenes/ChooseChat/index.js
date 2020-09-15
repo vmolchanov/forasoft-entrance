@@ -21,9 +21,6 @@ class ChooseChat extends Component {
         return (
             <div className='ChooseChat'>
                 <ul className='ChooseChat__action-list'>
-                    {/* <li>
-                        <Link to='/join'>Присоединиться</Link>
-                    </li> */}
                     <li className='ChooseChat__action-item'>
                         <Link className='ChooseChat__action-link' to='/create'>Создать</Link>
                     </li>
