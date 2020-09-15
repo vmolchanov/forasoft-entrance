@@ -12,37 +12,14 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+    extended: true
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/chats', (req, res) => {
-    res.json([
-        {
-            name: 'гыгы',
-            id: 283765
-        },
-        {
-            name: 'Други',
-            id: 94375867
-        },
-        {
-            name: '168',
-            id: 43867
-        },
-        {
-            name: 'АЗАЗА',
-            id: 948556
-        }
-    ]);
-});
-
-app.post('/create', (req, res) => {
-
-});
-
-app.get('/join', (req, res) => {
-    
-});
+// routes
+app.use(`/user`, require(`./routes/user`));
+app.use(`/chat`, require(`./routes/chat`));
 
 module.exports = app;

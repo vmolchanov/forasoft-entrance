@@ -27,9 +27,13 @@ const reducer = (state = initialState, action) => {
                 email: action.payload
             };
         case Type.SET_CHATS:
+            action.payload.forEach((a) => {
+                a.id = a._id;
+                delete a._id;
+            });
             return {
                 ...state,
-                chats: action.payload
+                chats: action.payload.slice()
             };
         default:
             return state;
@@ -59,11 +63,12 @@ export const setChats = (chats) => {
 
 export const downloadChats = () => {
     return (dispatch) => {
-        return fetch('chats')
+        return fetch('/chat/all')
             .then((response) => {
                 return response.json();
             })
             .then((chats) => {
+                // console.log('chats', chats);
                 dispatch(setChats(chats));
             })
     };

@@ -36,6 +36,9 @@ class Chat extends Component {
     render() {
         return (
             <div className='Chat'>
+                <div className="Chat__actions">
+                    <button type='button' onClick={() => {}}>В избранное</button>
+                </div>
                 <div className='Chat__messages'>
                     {this.props.messages.length === 0 ?
                         this.renderNoMessages() :

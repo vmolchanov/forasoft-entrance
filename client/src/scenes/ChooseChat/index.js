@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {setChats, downloadChats} from '../../reducers/user';
@@ -10,7 +11,12 @@ class ChooseChat extends Component {
     }
 
     render() {
-        const {chats} = this.props;
+        const {name, email, chats} = this.props;
+
+        if (name === null || email === null) {
+            return <Redirect to='/' />;
+        }
+
         return (
             <div>
                 <ul>
@@ -22,10 +28,10 @@ class ChooseChat extends Component {
                     </li>
                 </ul>
                 <ul>
-                    {chats.map(({name, id}, index) => {
+                    {chats.map(({title, id}, index) => {
                         return (
                             <li key={index}>
-                                <Link to={`/chat/${id}`}>{name}</Link>
+                                <Link to={`/chat/${id}`}>{title}</Link>
                             </li>
                         );
                     })}
@@ -37,15 +43,17 @@ class ChooseChat extends Component {
 
 ChooseChat.propTypes = {
     chats: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired
+        title: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired
     }))
 };
 
 const mapStateToProps = (state, ownProps) => {
     return {
         ...ownProps,
-        chats: state.user.chats
+        chats: state.user.chats,
+        name: state.user.name,
+        email: state.user.email
     };
 };
 

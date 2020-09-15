@@ -1,42 +1,73 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import InputForm from '../../components/InputForm';
 
-const CreateChat = (props) => {
-    const inputs = [
-        {
-            label: 'Название чата',
-            placeholder: 'Вечерние посиделки',
-            id: 'title',
-            name: 'title',
-            type: 'text',
-            required: true
-        }
-    ];
-    const {name, email} = props;
 
-    if (name === null || email === null) {
-        return <Redirect to='/' />;
+class CreateChat extends Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            value: ''
+        };
     }
 
-    return (
-        <div>
-            <InputForm
-                inputs={inputs}
-                buttonText='Создать'
-                onSubmit={(e) => {
+    render() {
+        const inputs = [
+            {
+                label: 'Название чата',
+                placeholder: 'Вечерние посиделки',
+                id: 'title',
+                name: 'title',
+                type: 'text',
+                required: true
+            }
+        ];
+        const {name, email} = this.props;
+
+        if (name === null || email === null) {
+            return <Redirect to='/' />;
+        }
+
+        return (
+            <div>
+                <form action='#' method='POST' onSubmit={(e) => {
                     e.preventDefault();
-                    fetch('/create', {
+                    fetch('/chat/create', {
                         method: 'POST',
-                        // body:
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            title: this.state.value
+                        })
                     });
-                }}
-            />
-        </div>
-    );
-};
+                }}>
+                
+                    <div>
+                        <label htmlFor='title'>Название чата</label>
+                        <input
+                            id='title'
+                            name='title'
+                            type='text'
+                            placeholder='Вечерние посиделки'
+                            required={true}
+                            value={this.state.value}
+                            onChange={(e) => {
+                                this.setState({
+                                    value: e.target.value
+                                })
+                            }}
+                        />
+                    </div>
+                    
+                <button type='submit'>Создать</button>
+            </form>
+            </div>
+        );
+    }
+}
 
 CreateChat.propTypes = {
     name: PropTypes.string,
