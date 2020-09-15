@@ -1,5 +1,4 @@
 const mongoose = require('../utils/mongoose');
-const {chatSchema} = require('./chat');
 
 const Schema = mongoose.Schema;
 
