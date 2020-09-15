@@ -1,11 +1,14 @@
 const initialState = {
+    title: '',
     messages: [],
     currentMessage: ''
 };
 
 const Type = {
     ADD_MESSAGE: 'ADD_MESSAGE',
-    CHANGE_CURRENT_MESSAGE: 'CHANGE_CURRENT_MESSAGE'
+    CHANGE_CURRENT_MESSAGE: 'CHANGE_CURRENT_MESSAGE',
+    ADD_TITLE: 'ADD_TITLE',
+    ADD_MESSAGES: 'ADD_MESSAGES'
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,6 +24,16 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentMessage: action.payload
+            };
+        case Type.ADD_TITLE:
+            return {
+                ...state,
+                title: action.payload
+            };
+        case Type.ADD_MESSAGES:
+            return {
+                ...state,
+                messages: action.payload.slice()
             };
         default:
             return state;
@@ -38,6 +51,33 @@ export const changeCurrentMessage = (newMessage) => {
     return {
         type: Type.CHANGE_CURRENT_MESSAGE,
         payload: newMessage
+    };
+};
+
+export const addTitle = (title) => {
+    return {
+        type: Type.ADD_TITLE,
+        payload: title
+    };
+};
+
+export const addMessages = (messages) => {
+    return {
+        type: Type.ADD_MESSAGES,
+        payload: messages
+    };
+};
+
+export const downloadMessages = (id) => {
+    return (dispatch) => {
+        return fetch(`/chat/${id}`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                dispatch(addTitle(data.title));
+                dispatch(addMessages(data.messages));
+            });
     };
 };
 

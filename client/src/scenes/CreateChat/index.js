@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import InputForm from '../../components/InputForm';
 
 
 class CreateChat extends Component {
@@ -14,16 +13,6 @@ class CreateChat extends Component {
     }
 
     render() {
-        const inputs = [
-            {
-                label: 'Название чата',
-                placeholder: 'Вечерние посиделки',
-                id: 'title',
-                name: 'title',
-                type: 'text',
-                required: true
-            }
-        ];
         const {name, email} = this.props;
 
         if (name === null || email === null) {

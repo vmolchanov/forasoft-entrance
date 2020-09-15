@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import IncomingMessage from '../../components/IncomingMessage';
 import OutgoingMessage from '../../components/OutgoingMessage';
 import io from 'socket.io-client';
-import {addMessage, changeCurrentMessage} from '../../reducers/chat';
+import {addMessage, changeCurrentMessage, downloadMessages} from '../../reducers/chat';
 import {MessageType} from '../../enums/message-type';
 
 class Chat extends Component {
@@ -27,6 +27,7 @@ class Chat extends Component {
                 type: MessageType.OUTGOING
             });
         });
+        this.props.onLoadComponent(this.id);
     }
 
     componentWillUnmount() {
@@ -134,6 +135,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onChangeCurrentMessage: (message) => {
             dispatch(changeCurrentMessage(message));
+        },
+        onLoadComponent: (id) => {
+            dispatch(downloadMessages(id));
         }
     };
 };

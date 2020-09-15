@@ -57,4 +57,14 @@ router.get('/join', async (req, res) => {
     return chat === null ? res.status(404).send() : res.json({id: chat._id});
 });
 
+router.get('/:id', async (req, res) => {
+    const {id} = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(404).send();
+    }
+    const chat = await Chat.findById(id);
+    console.log('chat', chat);
+    return res.json(chat);
+});
+
 module.exports = router;
