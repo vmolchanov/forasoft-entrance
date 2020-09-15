@@ -36,16 +36,14 @@ class Chat extends Component {
     }
     
     render() {
-        const {name, email} = this.props;
+        const {name, email, title} = this.props;
         if (name === null || email === null) {
             return <Redirect to='/' />;
         }
 
         return (
             <div className='Chat'>
-                <div className="Chat__actions">
-                    <button type='button' onClick={() => {}}>В избранное</button>
-                </div>
+                <h1>{title}</h1>
                 <div className='Chat__messages'>
                     {this.props.messages.length === 0 ?
                         this.renderNoMessages() :
@@ -111,6 +109,11 @@ class Chat extends Component {
     onTextAreaChange(e) {
         this.props.onChangeCurrentMessage(e.target.value);
     }
+
+    onFavouriteButtonClick(e) {
+        e.preventDefault();
+
+    }
 }
 
 Chat.propTypes = {
@@ -136,6 +139,7 @@ const mapStateToProps = (state, ownProps) => {
         name: state.user.name,
         email: state.user.email,
         messages: state.chat.messages,
+        title: state.chat.title,
         currentMessage: state.chat.currentMessage
     };
 };

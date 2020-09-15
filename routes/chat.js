@@ -7,10 +7,14 @@ const Message = require('../models/message').Message;
 
 router.get('/all', async (req, res) => {
     const email = req.cookies.email;
-    const user = await User.findOne({
+    const user = (await User.findOne({
         email
+    })).toJSON();
+    const chats = (await Chat.find({_id: {$in: user.chats}})).map((item) => {
+        item = item.toJSON();
+        delete item.messages;
+        return item;
     });
-    const chats = await Chat.find({_id: {$in: user.chats}});
 
     return res.json(chats);
 });

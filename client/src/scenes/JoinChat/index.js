@@ -21,10 +21,9 @@ class JoinChat extends Component {
         return (
             <div>
                 <form action='#' onSubmit={async (e) => {
-                        e.preventDefault();
-                        const {status} = await fetch(`/chat/join?id=${this.state.value}`);
-                        console.log('status', status);
-                        // обработка
+                    e.preventDefault();
+                    const {status} = await fetch(`/chat/join?id=${this.state.value}`);
+                    // обработка
                 }}>
                     <label htmlFor='chat-id'>ID чата</label>
                     <input

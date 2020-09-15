@@ -68,7 +68,6 @@ export const downloadChats = () => {
                 return response.json();
             })
             .then((chats) => {
-                // console.log('chats', chats);
                 dispatch(setChats(chats));
             })
     };

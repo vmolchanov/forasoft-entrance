@@ -75,7 +75,6 @@ export const downloadMessages = (id) => {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
                 dispatch(addTitle(data.title));
                 dispatch(addMessages(data.messages));
             });
