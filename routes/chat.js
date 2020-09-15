@@ -3,6 +3,7 @@ const mongoose = require('../utils/mongoose');
 const router = express.Router();
 const User = require('../models/user').User;
 const Chat = require('../models/chat').Chat;
+const Message = require('../models/message').Message;
 
 router.get('/all', async (req, res) => {
     const email = req.cookies.email;
@@ -59,12 +60,21 @@ router.get('/join', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const {id} = req.params;
+    const {email} = req.cookies;
     if (!mongoose.isValidObjectId(id)) {
         return res.status(404).send();
     }
-    const chat = await Chat.findById(id);
-    console.log('chat', chat);
-    return res.json(chat);
+    const chat = (await Chat.findById(id)).toJSON();
+    const messages = (await Message.find({_id: {$in: chat.messages}})).map((message) => {
+        message = message.toJSON();
+        message.type = (message.email === email) ? 'outgoing' : 'incoming';
+        return message;
+    });
+
+    return res.json({
+        ...chat,
+        messages
+    });
 });
 
 module.exports = router;

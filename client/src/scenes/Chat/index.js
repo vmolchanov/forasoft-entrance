@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import IncomingMessage from '../../components/IncomingMessage';
 import OutgoingMessage from '../../components/OutgoingMessage';
@@ -35,6 +36,11 @@ class Chat extends Component {
     }
     
     render() {
+        const {name, email} = this.props;
+        if (name === null || email === null) {
+            return <Redirect to='/' />;
+        }
+
         return (
             <div className='Chat'>
                 <div className="Chat__actions">
@@ -93,7 +99,8 @@ class Chat extends Component {
             type: MessageType.OUTGOING,
             name: this.props.name,
             body: this.props.currentMessage,
-            time: `${today.getHours()}:${today.getMinutes()}`,
+            time: today,
+            email: this.props.email,
             id: this.id
         };
         this.socket.emit('sendMessage', message);
@@ -107,12 +114,16 @@ class Chat extends Component {
 }
 
 Chat.propTypes = {
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    email: PropTypes.string,
     messages: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string,
         name: PropTypes.string,
         body: PropTypes.string,
-        time: PropTypes.string
+        time: PropTypes.oneOfType([
+            PropTypes.string.isRequired,
+            PropTypes.instanceOf(Date)
+        ])
     })).isRequired,
     currentMessage: PropTypes.string.isRequired,
     onAddMessage: PropTypes.func.isRequired,
@@ -123,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...ownProps,
         name: state.user.name,
+        email: state.user.email,
         messages: state.chat.messages,
         currentMessage: state.chat.currentMessage
     };

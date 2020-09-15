@@ -9,7 +9,7 @@ const schema = new Schema({
         required: true
     },
     messages: {
-        type: [messageSchema],
+        type: [mongoose.ObjectId],
         default: [],
         required: true
     }
