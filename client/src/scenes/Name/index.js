@@ -3,9 +3,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {setName, setEmail} from '../../reducers/user';
+import {setEmail, setName} from '../../actions/user';
+import {Name} from './Name';
+import {authenticate} from '../../thunk/user';
 
-class Name extends Component {
+class NameWrapper extends Component {
     constructor(props) {
         super(props);
 
@@ -15,82 +17,53 @@ class Name extends Component {
         };
     }
 
+    static propTypes = {
+        name: PropTypes.string,
+        email: PropTypes.string,
+        onSetName: PropTypes.func.isRequired,
+        onSetEmail: PropTypes.func.isRequired
+    }
+
     render() {
-        const {name, email, onSetName, onSetEmail} = this.props;
+        const {name, email} = this.props;
     
         if (name !== null && email !== null) {
             return <Redirect to='/choose' />;
         }
     
         return (
-            <div className='Name'>
-                <form className='Name__form' action='#' onSubmit={async (e) => {
-                        e.preventDefault();
-                        const name = e.target.querySelector('input[name="name"]').value;
-                        const email = e.target.querySelector('input[name="email"]').value;
-                        onSetName(name);
-                        onSetEmail(email); 
-                        this.authenticateUser(email);
-                }}>
-                    <div className='Name__form-content'>
-                        <div className='Name__input'>
-                            <label htmlFor='name'>Ваше имя</label>
-                            <input
-                                id='name'
-                                name='name'
-                                type='text'
-                                placeholder='Иван'
-                                required={true}
-                                value={this.state.name}
-                                onChange={(e) => {
-                                    this.setState({
-                                        name: e.target.value
-                                    })
-                                }}
-                            />
-                        </div>
-                        <div className='Name__input'>
-                            <label htmlFor='email'>Email</label>
-                            <input
-                                id='email'
-                                name='email'
-                                type='email'
-                                placeholder='mail@example.com'
-                                required={true}
-                                value={this.state.email}
-                                onChange={(e) => {
-                                    this.setState({
-                                        email: e.target.value
-                                    })
-                                }}
-                            />
-                        </div>
-                        <button className='Name__button' type='submit'>Далее</button>
-                    </div>
-                </form>
-            </div>
+            <Name
+                onFormSubmit={this.onFormSubmit}
+                onNameInputChange={this.onNameInputChange}
+                onEmailInputChange={this.onEmailInputChange}
+                nameInputValue={this.state.name}
+                emailInputValue={this.state.email}
+            />
         );
     }
 
-    authenticateUser(email) {
-        return fetch('/user/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email
-            })
-        });
-    };
-}
+    onFormSubmit = async (e) => {
+        e.preventDefault();
+        const {onSetName, onSetEmail, onUserAuthenticate} = this.props;
+        const name = e.target.querySelector('input[name="name"]').value;
+        const email = e.target.querySelector('input[name="email"]').value;
+        onSetName(name);
+        onSetEmail(email);
+        onUserAuthenticate(email);
+    }
 
-Name.propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string,
-    onSetName: PropTypes.func.isRequired,
-    onSetEmail: PropTypes.func.isRequired
-};
+    onNameInputChange = (e) => {
+        this.setState({
+            name: e.target.value
+        })
+    }
+
+    onEmailInputChange = (e) => {
+        this.setState({
+            email: e.target.value
+        })
+    }
+}
 
 const mapStateToProps = (state, ownProps) => {
     return {
@@ -100,15 +73,10 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onSetName: (name) => {
-            dispatch(setName(name));
-        },
-        onSetEmail: (email) => {
-            dispatch(setEmail(email));
-        }
-    }
-};
+const mapDispatchToProps = (dispatch) => ({
+    onSetName: (name) => dispatch(setName(name)),
+    onSetEmail: (email) => dispatch(setEmail(email)),
+    onUserAuthenticate: (email) => dispatch(authenticate(email))
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Name);
+export default connect(mapStateToProps, mapDispatchToProps)(NameWrapper);
