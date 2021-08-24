@@ -1,16 +1,24 @@
 import './index.scss';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Redirect, useHistory} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {CreateChat} from './CreateChat';
+import {createChat} from '../../thunk/chat';
+import {requireAuthentication} from '../../hocs/requireAuthentication';
+import {applyHocs} from '../../common/applyHocs';
 
-
-class CreateChat extends Component {
+class CreateChatWrapper extends Component {
     constructor (props) {
         super(props);
         this.state = {
             value: ''
         };
+    }
+
+    static propTypes  = {
+        name: PropTypes.string,
+        email: PropTypes.string
     }
 
     render() {
@@ -21,62 +29,40 @@ class CreateChat extends Component {
         }
 
         return (
-            <div className='CreateChat'>
-                <form className='CreateChat__form' action='#' method='POST' onSubmit={(e) => {
-                    e.preventDefault();
-                    fetch('/chat/create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            title: this.state.value
-                        })
-                    })
-                        .then((response) => {
-                            return response.json();
-                        })
-                        .then(({id}) => {
-                            this.props.history.push(`/chat/${id}`);
-                        });
-                }}>
-                    <div className='CreateChat__content'>
-                        <div className='CreateChat__input'>
-                            <label htmlFor='title'>Название чата</label>
-                            <input
-                                id='title'
-                                name='title'
-                                type='text'
-                                placeholder='Вечерние посиделки'
-                                required={true}
-                                value={this.state.value}
-                                onChange={(e) => {
-                                    this.setState({
-                                        value: e.target.value
-                                    })
-                                }}
-                            />
-                        </div>
-                        
-                        <button className='CreateChat__button' type='submit'>Создать</button>
-                    </div>
-            </form>
-            </div>
+            <CreateChat
+                onFormSubmit={this.onFormSubmit}
+                onTitleInputChange={this.onTitleInputChange}
+                titleInputValue={this.state.value}
+            />
         );
+    }
+
+    onFormSubmit = (e) => {
+        e.preventDefault();
+        this.props.onCreateChat(this.state.value).then(({id}) => {
+            this.props.history.push(`/chat/${id}`);
+        });
+    }
+
+    onTitleInputChange = (e) => {
+        this.setState({
+            value: e.target.value
+        })
     }
 }
 
-CreateChat.propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string
-};
+const mapStateToProps = (state, ownProps) => ({
+    ...ownProps,
+    name: state.user.name,
+    email: state.user.email
+});
 
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...ownProps,
-        name: state.user.name,
-        email: state.user.email
-    };
-};
+const mapDispatchToProps = (dispatch) => ({
+    onCreateChat: (title) => dispatch(createChat(title))
+});
 
-export default connect(mapStateToProps, null)(CreateChat);
+export default applyHocs(CreateChatWrapper, [
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps),
+    requireAuthentication()
+]);
