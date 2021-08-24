@@ -1,10 +1,6 @@
 import './App.scss';
 import React from 'react';
-import {
-    HashRouter as Router,
-    Route,
-    Switch
-} from 'react-router-dom';
+import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 import Name from './scenes/Name';
 import Chat from './scenes/Chat';
 import CreateChat from './scenes/CreateChat';
